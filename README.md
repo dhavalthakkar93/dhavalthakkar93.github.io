@@ -1,1 +1,1818 @@
-# dhavalthakkar93.github.io
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidyutDrishti — AI-Powered Renewable Energy Forecasting</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #00b894;
+            --primary-dark: #00a382;
+            --secondary: #0984e3;
+            --accent: #fdcb6e;
+            --dark: #0a0a1a;
+            --darker: #050510;
+            --card-bg: rgba(255,255,255,0.03);
+            --text: #e0e0e0;
+            --text-bright: #ffffff;
+            --gradient-1: linear-gradient(135deg, #00b894, #0984e3);
+            --gradient-2: linear-gradient(135deg, #6c5ce7, #0984e3);
+            --gradient-3: linear-gradient(135deg, #fdcb6e, #e17055);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Slide Container */
+        .slides-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 60px 70px 60px;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            background: var(--darker);
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+        }
+
+        .slide.prev {
+            opacity: 0;
+            transform: translateX(-100px);
+        }
+
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0; right: 0;
+            height: 60px;
+            background: rgba(10,10,26,0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 1000;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-btn {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text);
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .progress-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .progress-dot.active {
+            background: var(--primary);
+            transform: scale(1.3);
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .progress-dot:hover {
+            background: var(--primary-dark);
+        }
+
+        .slide-counter {
+            color: rgba(255,255,255,0.4);
+            font-size: 13px;
+            font-family: monospace;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-bright);
+            margin-bottom: 16px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 20px;
+        }
+
+        /* Cards & Grids */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,184,148,0.1);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* Metrics */
+        .metric-value {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 5px;
+        }
+
+        .metric-improvement {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        /* Architecture Diagram */
+        .arch-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            width: 100%;
+            max-width: 1100px;
+            flex-wrap: wrap;
+        }
+
+        .arch-node {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 20px 24px;
+            text-align: center;
+            min-width: 140px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s;
+        }
+
+        .arch-node.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .arch-node.highlight {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0,184,148,0.2);
+        }
+
+        .arch-arrow {
+            font-size: 1.5rem;
+            color: var(--primary);
+            padding: 0 10px;
+            opacity: 0;
+            transition: all 0.5s;
+        }
+
+        .arch-arrow.visible {
+            opacity: 1;
+        }
+
+        .arch-node-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .arch-node-label {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Tag / Badge */
+        .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 3px;
+        }
+
+        .tag-green { background: rgba(0,184,148,0.15); color: var(--primary); }
+        .tag-blue { background: rgba(9,132,227,0.15); color: var(--secondary); }
+        .tag-yellow { background: rgba(253,203,110,0.15); color: var(--accent); }
+
+        /* Sensor List */
+        .sensor-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .sensor-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .sensor-name {
+            font-weight: 600;
+            color: var(--text-bright);
+            min-width: 120px;
+        }
+
+        .sensor-purpose {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            max-width: 900px;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 12px 16px;
+            background: rgba(0,184,148,0.08);
+            color: var(--primary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .data-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 0.95rem;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255,255,255,0.02);
+        }
+
+        /* Code Block */
+        .code-block {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 20px 24px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            color: rgba(255,255,255,0.8);
+            overflow-x: auto;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .code-comment { color: rgba(255,255,255,0.3); }
+        .code-keyword { color: #6c5ce7; }
+        .code-string { color: #00b894; }
+        .code-number { color: #fdcb6e; }
+
+        /* Pipeline Flow */
+        .pipeline {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            width: 100%;
+            max-width: 1000px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .pipeline-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.4s;
+        }
+
+        .pipeline-step.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .pipeline-step-icon {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .pipeline-step-label {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            text-align: center;
+            max-width: 100px;
+        }
+
+        .pipeline-arrow {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.3);
+            opacity: 0;
+            transition: all 0.4s;
+        }
+
+        .pipeline-arrow.visible {
+            opacity: 1;
+        }
+
+        /* Feature List */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .feature-chip {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 0.8rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .feature-chip:hover {
+            border-color: var(--primary);
+            background: rgba(0,184,148,0.05);
+        }
+
+        /* Title Slide */
+        .title-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 30px;
+            background: rgba(0,184,148,0.1);
+            border: 1px solid rgba(0,184,148,0.3);
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .team-info {
+            margin-top: 40px;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.95rem;
+        }
+
+        .team-info strong {
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Animated background */
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(0,184,148,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,184,148,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .slide { z-index: 1; }
+        .nav-bar { z-index: 1000; }
+
+        /* Comparison */
+        .comparison-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 800px;
+            padding: 16px 24px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .comparison-label {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.7);
+            min-width: 160px;
+        }
+
+        .comparison-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            margin: 0 20px;
+            overflow: hidden;
+        }
+
+        .comparison-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--gradient-1);
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0;
+        }
+
+        .comparison-value {
+            font-weight: 700;
+            color: var(--primary);
+            min-width: 60px;
+            text-align: right;
+        }
+
+        /* LLM Section */
+        .chat-demo {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 24px;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .chat-msg {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s;
+        }
+
+        .chat-msg.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .chat-avatar {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .chat-avatar.user { background: rgba(9,132,227,0.2); }
+        .chat-avatar.ai { background: rgba(0,184,148,0.2); }
+
+        .chat-bubble {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* Keyframe Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .delay-3 { animation-delay: 0.3s; opacity: 0; }
+        .delay-4 { animation-delay: 0.4s; opacity: 0; }
+        .delay-5 { animation-delay: 0.5s; opacity: 0; }
+        .delay-6 { animation-delay: 0.6s; opacity: 0; }
+        .delay-7 { animation-delay: 0.7s; opacity: 0; }
+        .delay-8 { animation-delay: 0.8s; opacity: 0; }
+
+        /* Highlight box */
+        .highlight-box {
+            background: rgba(0,184,148,0.05);
+            border: 1px solid rgba(0,184,148,0.2);
+            border-radius: 12px;
+            padding: 20px 28px;
+            margin-top: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide { padding: 30px 20px; }
+            h1 { font-size: 2.2rem; }
+            h2 { font-size: 1.6rem; }
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .arch-flow { flex-direction: column; }
+            .pipeline { flex-direction: column; }
+        }
+
+        /* Keyboard hint */
+        .keyboard-hint {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.4);
+            z-index: 999;
+            opacity: 1;
+            transition: opacity 3s;
+        }
+
+        /* Section label */
+        .section-label {
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="keyboard-hint" id="keyHint">Use ← → arrow keys to navigate</div>
+
+    <div class="slides-container" id="slidesContainer">
+
+        <!-- SLIDE 1: Title -->
+        <div class="slide active" data-section="">
+            <div class="title-badge">AI for Bharat Hackathon 2026</div>
+            <h1>VidyutDrishti</h1>
+            <p class="subtitle">Edge Computing + Physics-Informed AI for Renewable Energy Forecasting</p>
+            <div class="grid-4" style="max-width: 700px; margin-top: 20px;">
+                <div style="text-align:center;">
+                    <div class="metric-value" style="font-size:1.8rem;">7+5</div>
+                    <div class="metric-label">Sensors</div>
+                </div>
+                <div style="text-align:center;">
+                    <div class="metric-value" style="font-size:1.8rem;">5</div>
+                    <div class="metric-label">Horizons</div>
+                </div>
+                <div style="text-align:center;">
+                    <div class="metric-value" style="font-size:1.8rem;">88%</div>
+                    <div class="metric-label">Improvement</div>
+                </div>
+                <div style="text-align:center;">
+                    <div class="metric-value" style="font-size:1.8rem;">0</div>
+                    <div class="metric-label">Cloud APIs</div>
+                </div>
+            </div>
+            <div class="team-info">
+                <strong>Team GreenMatrix</strong> &mdash; Dhaval Dipakbhai Thakkar<br>
+                Challenge: AI for Renewable Generation Forecasting (KREDL/KSPDCL)
+            </div>
+        </div>
+
+        <!-- SLIDE 2: Problem Statement -->
+        <div class="slide" data-section="Problem">
+            <span class="section-label">The Challenge</span>
+            <h2>Why Forecasting Matters</h2>
+            <div class="grid-2" style="margin-top: 10px;">
+                <div class="card">
+                    <span class="card-icon">&#9889;</span>
+                    <h3>Grid Instability</h3>
+                    <p style="color: rgba(255,255,255,0.6); line-height: 1.7;">Renewable sources are intermittent. Without accurate forecasting, grid operators over-provision thermal backup &mdash; increasing costs and emissions.</p>
+                </div>
+                <div class="card">
+                    <span class="card-icon">&#127774;</span>
+                    <h3>Curtailment Loss</h3>
+                    <p style="color: rgba(255,255,255,0.6); line-height: 1.7;">Karnataka curtails ~8% of renewable generation due to unpredictability. Better day-ahead and intra-day forecasts directly reduce this waste.</p>
+                </div>
+                <div class="card">
+                    <span class="card-icon">&#128202;</span>
+                    <h3>Scheduling Penalties</h3>
+                    <p style="color: rgba(255,255,255,0.6); line-height: 1.7;">Generators face deviation settlement charges for inaccurate scheduling. Improved forecasts = lower penalties = better economics.</p>
+                </div>
+                <div class="card">
+                    <span class="card-icon">&#128274;</span>
+                    <h3>Data Privacy</h3>
+                    <p style="color: rgba(255,255,255,0.6); line-height: 1.7;">Plant operational data is sensitive. Solution must work on-premise without sending data to external cloud services.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: High-Level System Architecture -->
+        <div class="slide" data-section="Architecture">
+            <span class="section-label">System Design</span>
+            <h2>System Architecture</h2>
+            <p class="subtitle" style="margin-bottom: 20px;">Complete edge-to-insight pipeline — zero cloud dependencies</p>
+            <!-- Architecture Diagram using CSS -->
+            <div style="width: 100%; max-width: 1050px; position: relative;">
+                <!-- Top Row: Sensor Nodes -->
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0;">
+                    <!-- Solar Node Box -->
+                    <div class="arch-node visible" style="border-color: rgba(0,184,148,0.4); min-width: 220px; padding: 18px 22px;">
+                        <span style="font-size: 1.6rem;">&#127774;</span>
+                        <strong style="display: block; margin: 6px 0; color: var(--primary);">Solar Node (ESP32 #1)</strong>
+                        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-align: left; line-height: 1.7;">
+                            BH1750 &bull; BME280 &bull; GY-906<br>
+                            ACS712 &bull; Laser+LDR &bull; OLED<br>
+                            <span style="color: var(--primary);">7 sensors &bull; 9 data points</span>
+                        </div>
+                    </div>
+                    <!-- Wind Node Box -->
+                    <div class="arch-node visible" style="border-color: rgba(9,132,227,0.4); min-width: 220px; padding: 18px 22px;">
+                        <span style="font-size: 1.6rem;">&#127744;</span>
+                        <strong style="display: block; margin: 6px 0; color: var(--secondary);">Wind Node (ESP32 #2)</strong>
+                        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-align: left; line-height: 1.7;">
+                            Pot (speed) &bull; Pot (direction)<br>
+                            BME280 &bull; MPU-6050 &bull; OLED<br>
+                            <span style="color: var(--secondary);">5 sensors &bull; 8 data points</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Arrows Down -->
+                <div style="display: flex; justify-content: space-between; padding: 0 80px;">
+                    <div style="text-align: center; padding: 8px 0; color: var(--primary); font-size: 0.75rem;">
+                        &#9660;<br><span style="color: rgba(255,255,255,0.4);">WiFi / MQTT</span><br>&#9660;
+                    </div>
+                    <div style="text-align: center; padding: 8px 0; color: var(--secondary); font-size: 0.75rem;">
+                        &#9660;<br><span style="color: rgba(255,255,255,0.4);">WiFi / MQTT</span><br>&#9660;
+                    </div>
+                </div>
+                <!-- Middle: Raspberry Pi -->
+                <div class="arch-node visible" style="border-color: rgba(253,203,110,0.4); margin: 0 auto; min-width: 380px; padding: 18px 30px;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+                        <span style="font-size: 2rem;">&#129292;</span>
+                        <div style="text-align: left;">
+                            <strong style="color: var(--accent); font-size: 1.1rem;">Raspberry Pi 3B — Edge Gateway</strong>
+                            <div style="font-size: 0.78rem; color: rgba(255,255,255,0.5); line-height: 1.8; margin-top: 4px;">
+                                &#128268; Mosquitto MQTT Broker (port 1883)<br>
+                                &#128451; SQLite Database (time-series storage)<br>
+                                &#127760; Flask REST API (port 5000)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Arrow Down -->
+                <div style="text-align: center; padding: 8px 0; color: var(--accent); font-size: 0.75rem;">
+                    &#9660;<br><span style="color: rgba(255,255,255,0.4);">HTTP REST API</span><br>&#9660;
+                </div>
+                <!-- Bottom: Dashboard + ML + LLM -->
+                <div class="arch-node visible" style="border-color: rgba(108,92,231,0.4); margin: 0 auto; min-width: 500px; padding: 18px 30px;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 30px;">
+                        <div style="text-align: center;">
+                            <span style="font-size: 1.5rem;">&#128200;</span>
+                            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">Streamlit<br>Dashboard</div>
+                        </div>
+                        <div style="color: rgba(255,255,255,0.2);">|</div>
+                        <div style="text-align: center;">
+                            <span style="font-size: 1.5rem;">&#129504;</span>
+                            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">XGBoost ML<br>5 Horizons</div>
+                        </div>
+                        <div style="color: rgba(255,255,255,0.2);">|</div>
+                        <div style="text-align: center;">
+                            <span style="font-size: 1.5rem;">&#129302;</span>
+                            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">Qwen 2.5 LLM<br>(Ollama local)</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px; text-align: center;"><strong style="color: #a29bfe; font-size: 0.85rem;">Laptop — Intelligence Layer</strong></div>
+                </div>
+            </div>
+            <div class="highlight-box" style="margin-top: 20px; max-width: 700px; text-align: center;">
+                <strong style="color: var(--primary);">Entire system runs on local network.</strong>
+                <span style="color: rgba(255,255,255,0.6);">No internet required. No cloud APIs. Data never leaves the facility.</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: Solar Node Overview -->
+        <div class="slide" data-section="Hardware">
+            <span class="section-label">IoT Layer — Solar</span>
+            <h2>Solar Monitoring Node</h2>
+            <p class="subtitle">ESP32 #1 + 7 sensors &mdash; irradiance, temperature, current, and panel health</p>
+            <div class="grid-2">
+                <div>
+                    <div class="sensor-item"><span class="sensor-dot"></span><span class="sensor-name">BH1750</span><span class="sensor-purpose">Lux &rarr; GHI (W/m&sup2;)</span></div>
+                    <div class="sensor-item"><span class="sensor-dot"></span><span class="sensor-name">BME280</span><span class="sensor-purpose">Air temp, humidity, pressure</span></div>
+                    <div class="sensor-item"><span class="sensor-dot"></span><span class="sensor-name">GY-906 MLX90614</span><span class="sensor-purpose">Panel surface temp (IR contactless)</span></div>
+                    <div class="sensor-item"><span class="sensor-dot"></span><span class="sensor-name">ACS712 (30A)</span><span class="sensor-purpose">Hall-effect current measurement</span></div>
+                    <div class="sensor-item"><span class="sensor-dot"></span><span class="sensor-name">KY-008 Laser</span><span class="sensor-purpose">Soiling detection (emitter)</span></div>
+                    <div class="sensor-item"><span class="sensor-dot"></span><span class="sensor-name">LDR</span><span class="sensor-purpose">Soiling detection (receiver)</span></div>
+                    <div class="sensor-item"><span class="sensor-dot"></span><span class="sensor-name">SH1106 OLED</span><span class="sensor-purpose">128x64 live display</span></div>
+                    <div style="margin-top: 14px;">
+                        <span class="tag tag-green">I2C: 0x23, 0x76, 0x5A, 0x3C</span>
+                        <span class="tag tag-blue">ADC: GPIO34, GPIO36</span>
+                        <span class="tag tag-yellow">Digital: GPIO27</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="card" style="margin-bottom: 14px;">
+                        <h3 style="font-size: 1.05rem;">Solar Power Equation</h3>
+                        <div class="code-block" style="font-size: 0.85rem; margin-top: 10px;">
+P<sub>solar</sub> = &eta;(T) &times; A &times; GHI &times; (1 - S)
+                        </div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.55); line-height: 2.1; margin-top: 12px;">
+                            <strong style="color: var(--text-bright);">P<sub>solar</sub></strong> = Generated power (Watts)<br>
+                            <strong style="color: var(--text-bright);">&eta;(T)</strong> = Panel efficiency at temp T (15-20%)<br>
+                            <strong style="color: var(--text-bright);">A</strong> = Panel surface area (m&sup2;)<br>
+                            <strong style="color: var(--text-bright);">GHI</strong> = Global Horizontal Irradiance (W/m&sup2;) &mdash; BH1750<br>
+                            <strong style="color: var(--text-bright);">S</strong> = Soiling index (0=clean, 1=dirty) &mdash; Laser+LDR
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 style="font-size: 1.05rem;">Temperature Degradation</h3>
+                        <div class="code-block" style="font-size: 0.85rem; margin-top: 10px;">
+&eta;(T) = &eta;<sub>ref</sub> &times; [1 - &beta; &times; (T<sub>panel</sub> - 25&deg;C)]
+                        </div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.55); line-height: 2.1; margin-top: 12px;">
+                            <strong style="color: var(--text-bright);">&eta;<sub>ref</sub></strong> = Reference efficiency at 25&deg;C (datasheet)<br>
+                            <strong style="color: var(--text-bright);">&beta;</strong> = Temp coefficient (&approx;0.004/&deg;C for silicon)<br>
+                            <strong style="color: var(--text-bright);">T<sub>panel</sub></strong> = Panel surface temp &mdash; GY-906 MLX90614
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: Solar Sensors Deep Dive -->
+        <div class="slide" data-section="Sensors">
+            <span class="section-label">Sensor Roles — Solar</span>
+            <h2>Solar Node — Sensor Deep Dive</h2>
+            <p class="subtitle">Each sensor serves a specific role in the forecasting pipeline</p>
+            <div class="grid-2">
+                <div class="card" style="padding: 20px 24px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="font-size: 1.5rem;">&#9728;&#65039;</span>
+                        <h3 style="margin: 0;">BH1750 — Light Sensor</h3>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem; line-height: 1.8;">
+                        Measures <strong style="color: var(--text-bright);">luminous intensity</strong> in lux (0&ndash;65,535). Converted to <strong style="color: var(--primary);">GHI (W/m&sup2;)</strong> using calibration factor. GHI is the primary driver of solar power — the single most important input to the model.
+                    </p>
+                    <div style="margin-top: 8px; font-size: 0.75rem; color: rgba(255,255,255,0.4);">Interface: I2C (0x23) &bull; 16-bit digital output &bull; &plusmn;20% accuracy</div>
+                </div>
+                <div class="card" style="padding: 20px 24px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="font-size: 1.5rem;">&#127777;&#65039;</span>
+                        <h3 style="margin: 0;">BME280 — Environment</h3>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem; line-height: 1.8;">
+                        3-in-1 sensor: <strong style="color: var(--text-bright);">Temperature</strong> (-40 to +85&deg;C), <strong style="color: var(--text-bright);">Humidity</strong> (0-100%), <strong style="color: var(--text-bright);">Barometric Pressure</strong> (300-1100 hPa). Used for weather context and air density calculation for both nodes.
+                    </p>
+                    <div style="margin-top: 8px; font-size: 0.75rem; color: rgba(255,255,255,0.4);">Interface: I2C (0x76) &bull; &plusmn;1&deg;C / &plusmn;3% RH / &plusmn;1 hPa accuracy</div>
+                </div>
+                <div class="card" style="padding: 20px 24px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="font-size: 1.5rem;">&#128293;</span>
+                        <h3 style="margin: 0;">GY-906 MLX90614 — Panel Temp</h3>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem; line-height: 1.8;">
+                        <strong style="color: var(--text-bright);">Infrared thermometer</strong> — measures panel surface temperature without physical contact. Every +1&deg;C above 25&deg;C reduces efficiency by ~0.4%. Critical for temperature degradation modelling.
+                    </p>
+                    <div style="margin-top: 8px; font-size: 0.75rem; color: rgba(255,255,255,0.4);">Interface: I2C (0x5A) &bull; -70 to +380&deg;C range &bull; &plusmn;0.5&deg;C accuracy</div>
+                </div>
+                <div class="card" style="padding: 20px 24px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="font-size: 1.5rem;">&#9889;</span>
+                        <h3 style="margin: 0;">ACS712 — Current Sensor</h3>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem; line-height: 1.8;">
+                        <strong style="color: var(--text-bright);">Hall-effect sensor</strong> measures DC current flowing from the panel. Combined with known voltage to calculate actual power output (W). Auto-calibrates zero-point at startup.
+                    </p>
+                    <div style="margin-top: 8px; font-size: 0.75rem; color: rgba(255,255,255,0.4);">Interface: Analog (GPIO34) &bull; 0-30A range &bull; 66mV/A sensitivity</div>
+                </div>
+                <div class="card" style="padding: 20px 24px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="font-size: 1.5rem;">&#128308;</span>
+                        <h3 style="margin: 0;">KY-008 Laser + LDR — Soiling</h3>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem; line-height: 1.8;">
+                        <strong style="color: var(--text-bright);">Novel soiling detection:</strong> Laser beam bounces off panel surface. Clean panel reflects strongly (high LDR reading). Dust/dirt absorbs light (low reading). Produces soiling index 0-1 for cleaning scheduling.
+                    </p>
+                    <div style="margin-top: 8px; font-size: 0.75rem; color: rgba(255,255,255,0.4);">Laser: Digital (GPIO27) &bull; LDR: Analog (GPIO36) &bull; Calibrated at startup</div>
+                </div>
+                <div class="card" style="padding: 20px 24px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="font-size: 1.5rem;">&#128187;</span>
+                        <h3 style="margin: 0;">SH1106 OLED — Display</h3>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem; line-height: 1.8;">
+                        <strong style="color: var(--text-bright);">128x64 pixel OLED</strong> shows live readings on the node itself. Useful for field debugging without needing laptop/phone. Displays GHI, temps, power, soiling in real-time.
+                    </p>
+                    <div style="margin-top: 8px; font-size: 0.75rem; color: rgba(255,255,255,0.4);">Interface: I2C (0x3C) &bull; Adafruit SH110X driver &bull; 2s refresh</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: Wind Node Overview -->
+        <div class="slide" data-section="Hardware">
+            <span class="section-label">IoT Layer — Wind</span>
+            <h2>Wind Monitoring Node</h2>
+            <p class="subtitle">ESP32 #2 + 5 sensors &mdash; wind dynamics, atmosphere, and turbine health</p>
+            <div class="grid-2">
+                <div>
+                    <div class="sensor-item"><span class="sensor-dot" style="background: var(--secondary);"></span><span class="sensor-name">Potentiometer 1</span><span class="sensor-purpose">Wind speed 0-25 m/s (anemometer proxy)</span></div>
+                    <div class="sensor-item"><span class="sensor-dot" style="background: var(--secondary);"></span><span class="sensor-name">Potentiometer 2</span><span class="sensor-purpose">Wind direction 0-360&deg; (vane proxy)</span></div>
+                    <div class="sensor-item"><span class="sensor-dot" style="background: var(--secondary);"></span><span class="sensor-name">BME280</span><span class="sensor-purpose">Temp, humidity, pressure (&rarr; air density)</span></div>
+                    <div class="sensor-item"><span class="sensor-dot" style="background: var(--secondary);"></span><span class="sensor-name">MPU-6050</span><span class="sensor-purpose">3-axis accelerometer (vibration RMS)</span></div>
+                    <div class="sensor-item"><span class="sensor-dot" style="background: var(--secondary);"></span><span class="sensor-name">SH1106 OLED</span><span class="sensor-purpose">128x64 live display</span></div>
+                    <div style="margin-top: 14px;">
+                        <span class="tag tag-green">I2C: 0x76, 0x68, 0x3C</span>
+                        <span class="tag tag-blue">ADC: GPIO34, GPIO35</span>
+                    </div>
+                    <!-- Production note -->
+                    <div style="margin-top: 16px; padding: 14px 16px; background: rgba(9,132,227,0.06); border: 1px solid rgba(9,132,227,0.2); border-radius: 10px;">
+                        <h3 style="font-size: 0.85rem; color: var(--secondary); margin-bottom: 6px;">&#128270; Prototype vs Production</h3>
+                        <p style="font-size: 0.78rem; color: rgba(255,255,255,0.6); line-height: 1.7;">
+                            Potentiometers simulate <strong style="color: var(--text-bright);">anemometer</strong> and <strong style="color: var(--text-bright);">wind vane</strong>. These instruments could not be arranged within a 1-week prototype timeline, but firmware reads the same analog GPIO pins &mdash; swapping to production sensors requires <strong style="color: var(--primary);">zero code changes</strong>.
+                        </p>
+                        <p style="font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 6px; line-height: 1.6;">
+                            <strong>Anemometer:</strong> Cup-type rotates with wind, generates Hall-effect pulses &prop; speed.<br>
+                            <strong>Wind Vane:</strong> Internal resistive pot rotates with wind direction, outputs 0-3.3V &rarr; 0-360&deg;.
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <div class="card" style="margin-bottom: 14px;">
+                        <h3 style="font-size: 1.05rem;">Wind Power Equation</h3>
+                        <div class="code-block" style="font-size: 0.85rem; margin-top: 10px;">
+P<sub>wind</sub> = 0.5 &times; &rho; &times; A &times; C<sub>p</sub> &times; v&sup3;
+                        </div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.55); line-height: 2.1; margin-top: 12px;">
+                            <strong style="color: var(--text-bright);">P<sub>wind</sub></strong> = Extracted power (Watts)<br>
+                            <strong style="color: var(--text-bright);">&rho;</strong> = Air density (kg/m&sup3;) &mdash; from BME280<br>
+                            <strong style="color: var(--text-bright);">A</strong> = Rotor swept area (&pi;r&sup2;, m&sup2;)<br>
+                            <strong style="color: var(--text-bright);">C<sub>p</sub></strong> = Power coefficient (max 0.593 Betz limit)<br>
+                            <strong style="color: var(--text-bright);">v</strong> = Wind speed (m/s) &mdash; from anemometer/pot
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 style="font-size: 1.05rem;">Air Density (Real-time)</h3>
+                        <div class="code-block" style="font-size: 0.85rem; margin-top: 10px;">
+&rho; = P / (R<sub>specific</sub> &times; T)
+                        </div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.55); line-height: 2.1; margin-top: 12px;">
+                            <strong style="color: var(--text-bright);">P</strong> = Atmospheric pressure (Pa) &mdash; BME280<br>
+                            <strong style="color: var(--text-bright);">R<sub>specific</sub></strong> = Gas constant: 287.058 J/(kg&middot;K)<br>
+                            <strong style="color: var(--text-bright);">T</strong> = Absolute temperature (K) &mdash; BME280
+                        </div>
+                        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 8px; font-style: italic;">
+                            Hot air = lower &rho; = less power. Real-time calculation improves accuracy 3-5%.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: Wind Sensors Deep Dive -->
+        <div class="slide" data-section="Sensors">
+            <span class="section-label">Sensor Roles — Wind</span>
+            <h2>Wind Node — Sensor Deep Dive</h2>
+            <p class="subtitle">Understanding what each sensor measures and why it matters for forecasting</p>
+            <div class="grid-2">
+                <div class="card" style="padding: 20px 24px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="font-size: 1.5rem;">&#127744;</span>
+                        <h3 style="margin: 0;">Anemometer (Pot Proxy)</h3>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem; line-height: 1.8;">
+                        Measures <strong style="color: var(--text-bright);">wind speed</strong> (0&ndash;25 m/s). The most critical wind input &mdash; power scales with v&sup3;, so small speed errors compound dramatically. In production: cup anemometer or ultrasonic sensor.
+                    </p>
+                    <div style="margin-top: 8px; font-size: 0.75rem; color: rgba(255,255,255,0.4);">Analog GPIO34 &bull; 12-bit ADC &bull; Mapped 0&ndash;25 m/s linear</div>
+                </div>
+                <div class="card" style="padding: 20px 24px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="font-size: 1.5rem;">&#129517;</span>
+                        <h3 style="margin: 0;">Wind Vane (Pot Proxy)</h3>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem; line-height: 1.8;">
+                        Measures <strong style="color: var(--text-bright);">wind direction</strong> (0&ndash;360&deg;, mapped to N/NE/E/SE/S/SW/W/NW). Directional data is crucial for turbine yaw control and spatial correlation between plants. In production: magnetic wind vane.
+                    </p>
+                    <div style="margin-top: 8px; font-size: 0.75rem; color: rgba(255,255,255,0.4);">Analog GPIO35 &bull; 12-bit ADC &bull; Mapped 0&ndash;360&deg; &rarr; 16 compass points</div>
+                </div>
+                <div class="card" style="padding: 20px 24px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="font-size: 1.5rem;">&#127777;&#65039;</span>
+                        <h3 style="margin: 0;">BME280 — Atmospheric</h3>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem; line-height: 1.8;">
+                        Provides <strong style="color: var(--text-bright);">pressure + temperature</strong> for real-time air density (&rho;) computation. Also detects weather fronts (pressure drops) that signal incoming wind pattern changes. Humidity affects turbine blade icing risk.
+                    </p>
+                    <div style="margin-top: 8px; font-size: 0.75rem; color: rgba(255,255,255,0.4);">I2C (0x76) &bull; Pressure: 300-1100 hPa &bull; Temp: -40 to +85&deg;C</div>
+                </div>
+                <div class="card" style="padding: 20px 24px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="font-size: 1.5rem;">&#128171;</span>
+                        <h3 style="margin: 0;">MPU-6050 — Vibration</h3>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem; line-height: 1.8;">
+                        <strong style="color: var(--text-bright);">6-axis IMU</strong> (accelerometer + gyroscope). We compute vibration RMS from 3-axis acceleration. High vibration indicates bearing wear, blade imbalance, or structural fatigue &mdash; enables <strong style="color: var(--primary);">predictive maintenance</strong>.
+                    </p>
+                    <div style="margin-top: 8px; font-size: 0.75rem; color: rgba(255,255,255,0.4);">I2C (0x68) &bull; &plusmn;16g range &bull; 16-bit resolution &bull; 1kHz sample rate</div>
+                </div>
+            </div>
+            <!-- Soiling formula moved here -->
+            <div class="highlight-box" style="margin-top: 20px; max-width: 900px;">
+                <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap; justify-content: center;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-bottom: 4px;">VIBRATION FORMULA</div>
+                        <div class="code-block" style="display: inline-block; padding: 10px 20px; font-size: 0.85rem;">
+vib<sub>RMS</sub> = &radic;(a<sub>x</sub>&sup2; + a<sub>y</sub>&sup2; + a<sub>z</sub>&sup2;)
+                        </div>
+                    </div>
+                    <div style="color: rgba(255,255,255,0.5); font-size: 0.8rem; max-width: 400px;">
+                        <strong style="color: var(--text-bright);">a<sub>x</sub>, a<sub>y</sub>, a<sub>z</sub></strong> = 3-axis acceleration (m/s&sup2;)<br>
+                        Normal: &lt; 2.0 &bull; Warning: 2.0&ndash;5.0 &bull; Critical: &gt; 5.0
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: Data Pipeline — Detailed Architecture -->
+        <div class="slide" data-section="Pipeline">
+            <span class="section-label">Data Flow</span>
+            <h2>Edge Data Pipeline</h2>
+            <p class="subtitle">From sensor reading to stored time-series in under 3 seconds</p>
+            <!-- Detailed flow diagram -->
+            <div style="width: 100%; max-width: 1000px;">
+                <div style="display: flex; align-items: stretch; justify-content: center; gap: 0;">
+                    <!-- Step 1: ESP32 -->
+                    <div style="flex: 1; text-align: center; padding: 16px 10px; background: rgba(0,184,148,0.04); border: 1px solid rgba(0,184,148,0.15); border-radius: 12px 0 0 12px;">
+                        <div style="font-size: 1.8rem;">&#128225;</div>
+                        <strong style="color: var(--primary); font-size: 0.9rem;">ESP32 Nodes</strong>
+                        <div style="font-size: 0.72rem; color: rgba(255,255,255,0.5); margin-top: 8px; line-height: 1.7;">
+                            Read sensors via I2C + ADC<br>
+                            Apply physics formulas<br>
+                            Package as JSON<br>
+                            Publish every 2 seconds
+                        </div>
+                    </div>
+                    <!-- Arrow -->
+                    <div style="display: flex; align-items: center; padding: 0 6px; color: var(--primary); font-size: 1.2rem;">&#10132;</div>
+                    <!-- Step 2: MQTT -->
+                    <div style="flex: 1; text-align: center; padding: 16px 10px; background: rgba(9,132,227,0.04); border: 1px solid rgba(9,132,227,0.15);">
+                        <div style="font-size: 1.8rem;">&#128268;</div>
+                        <strong style="color: var(--secondary); font-size: 0.9rem;">MQTT Broker</strong>
+                        <div style="font-size: 0.72rem; color: rgba(255,255,255,0.5); margin-top: 8px; line-height: 1.7;">
+                            Mosquitto on Pi<br>
+                            Topics: vidyutdrishti/solar<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vidyutdrishti/wind<br>
+                            QoS 0, retain=false
+                        </div>
+                    </div>
+                    <!-- Arrow -->
+                    <div style="display: flex; align-items: center; padding: 0 6px; color: var(--secondary); font-size: 1.2rem;">&#10132;</div>
+                    <!-- Step 3: Collector -->
+                    <div style="flex: 1; text-align: center; padding: 16px 10px; background: rgba(253,203,110,0.04); border: 1px solid rgba(253,203,110,0.15);">
+                        <div style="font-size: 1.8rem;">&#128451;</div>
+                        <strong style="color: var(--accent); font-size: 0.9rem;">Data Collector</strong>
+                        <div style="font-size: 0.72rem; color: rgba(255,255,255,0.5); margin-top: 8px; line-height: 1.7;">
+                            Python subscriber<br>
+                            Parses JSON payload<br>
+                            INSERT into SQLite<br>
+                            43,200 rows/day/node
+                        </div>
+                    </div>
+                    <!-- Arrow -->
+                    <div style="display: flex; align-items: center; padding: 0 6px; color: var(--accent); font-size: 1.2rem;">&#10132;</div>
+                    <!-- Step 4: SQLite -->
+                    <div style="flex: 1; text-align: center; padding: 16px 10px; background: rgba(108,92,231,0.04); border: 1px solid rgba(108,92,231,0.15);">
+                        <div style="font-size: 1.8rem;">&#128190;</div>
+                        <strong style="color: #a29bfe; font-size: 0.9rem;">SQLite DB</strong>
+                        <div style="font-size: 0.72rem; color: rgba(255,255,255,0.5); margin-top: 8px; line-height: 1.7;">
+                            vidyutdrishti.db<br>
+                            Tables: solar, wind<br>
+                            Indexed by timestamp<br>
+                            ~7 MB/month
+                        </div>
+                    </div>
+                    <!-- Arrow -->
+                    <div style="display: flex; align-items: center; padding: 0 6px; color: #a29bfe; font-size: 1.2rem;">&#10132;</div>
+                    <!-- Step 5: API -->
+                    <div style="flex: 1; text-align: center; padding: 16px 10px; background: rgba(253,121,168,0.04); border: 1px solid rgba(253,121,168,0.15); border-radius: 0 12px 12px 0;">
+                        <div style="font-size: 1.8rem;">&#127760;</div>
+                        <strong style="color: #fd79a8; font-size: 0.9rem;">Flask API</strong>
+                        <div style="font-size: 0.72rem; color: rgba(255,255,255,0.5); margin-top: 8px; line-height: 1.7;">
+                            REST endpoints<br>
+                            /api/solar/latest<br>
+                            /api/wind/latest<br>
+                            Serves to Dashboard
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- JSON example -->
+            <div style="margin-top: 24px; width: 100%; max-width: 1000px;">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 style="font-size: 0.9rem;">MQTT Payload — Solar (every 2s)</h3>
+                        <div class="code-block" style="font-size: 0.72rem; margin-top: 8px;">
+{
+  <span class="code-string">"lux"</span>: <span class="code-number">45230</span>,
+  <span class="code-string">"ghi"</span>: <span class="code-number">612.5</span>,
+  <span class="code-string">"air_temp"</span>: <span class="code-number">34.2</span>,
+  <span class="code-string">"panel_temp"</span>: <span class="code-number">48.7</span>,
+  <span class="code-string">"humidity"</span>: <span class="code-number">62.1</span>,
+  <span class="code-string">"pressure"</span>: <span class="code-number">1008.3</span>,
+  <span class="code-string">"current"</span>: <span class="code-number">4.82</span>,
+  <span class="code-string">"power"</span>: <span class="code-number">3847.2</span>,
+  <span class="code-string">"soiling"</span>: <span class="code-number">0.15</span>
+}
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 style="font-size: 0.9rem;">MQTT Payload — Wind (every 2s)</h3>
+                        <div class="code-block" style="font-size: 0.72rem; margin-top: 8px;">
+{
+  <span class="code-string">"wind_speed"</span>: <span class="code-number">7.8</span>,
+  <span class="code-string">"wind_direction"</span>: <span class="code-number">225</span>,
+  <span class="code-string">"compass"</span>: <span class="code-string">"SW"</span>,
+  <span class="code-string">"air_temp"</span>: <span class="code-number">33.8</span>,
+  <span class="code-string">"humidity"</span>: <span class="code-number">58.4</span>,
+  <span class="code-string">"pressure"</span>: <span class="code-number">1008.1</span>,
+  <span class="code-string">"vibration"</span>: <span class="code-number">2.34</span>,
+  <span class="code-string">"wind_power"</span>: <span class="code-number">2156.8</span>
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 16px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <span class="tag tag-green">Latency: &lt; 100ms</span>
+                <span class="tag tag-blue">Protocol: MQTT v3.1.1</span>
+                <span class="tag tag-yellow">Prototype: SQLite WAL mode</span>
+                <span class="tag tag-green">Production: InfluxDB time-series DB</span>
+                <span class="tag tag-blue">Auto-start: systemd services</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: ML Pipeline -->
+        <div class="slide" data-section="ML">
+            <span class="section-label">Machine Learning</span>
+            <h2>Feature Engineering & Modeling</h2>
+            <p class="subtitle">93 engineered features capturing temporal patterns and physical relationships</p>
+            <div class="grid-2" style="margin-bottom: 20px;">
+                <div class="card">
+                    <h3>Feature Categories</h3>
+                    <div style="margin-top: 10px;">
+                        <span class="tag tag-green">Lag (1-24h)</span>
+                        <span class="tag tag-green">Rolling Mean</span>
+                        <span class="tag tag-green">Rolling Std</span>
+                        <span class="tag tag-blue">Hour sin/cos</span>
+                        <span class="tag tag-blue">Day sin/cos</span>
+                        <span class="tag tag-blue">Month sin/cos</span>
+                        <span class="tag tag-yellow">Clearness Index</span>
+                        <span class="tag tag-yellow">Diff features</span>
+                        <span class="tag tag-yellow">Pressure trend</span>
+                    </div>
+                    <p style="margin-top: 16px; color: rgba(255,255,255,0.5); font-size: 0.85rem;">Hourly resampling from 1-minute data. Time-series train/val/test split (70/15/15).</p>
+                </div>
+                <div class="card">
+                    <h3>XGBoost Configuration</h3>
+                    <div class="code-block" style="font-size: 0.78rem; margin-top: 10px;">
+n_estimators = <span class="code-number">500</span>
+max_depth = <span class="code-number">6</span>
+learning_rate = <span class="code-number">0.05</span>
+subsample = <span class="code-number">0.8</span>
+colsample_bytree = <span class="code-number">0.8</span>
+<br><span class="code-comment"># Physics constraints applied post-prediction:</span>
+<span class="code-comment"># - Power &ge; 0 always</span>
+<span class="code-comment"># - Solar = 0 at night (GHI = 0)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="highlight-box" style="max-width: 800px; text-align: center;">
+                <strong style="color: var(--accent);">Multi-Horizon:</strong>
+                <span style="color: rgba(255,255,255,0.7);">Separate models for 1h, 3h, 6h, 12h, and 24h ahead — optimized for each operational use case</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: Forecasting Results -->
+        <div class="slide" data-section="Results">
+            <span class="section-label">Performance</span>
+            <h2>Forecasting Accuracy</h2>
+            <p class="subtitle">Significant improvement over persistence baseline across all horizons</p>
+            <div class="grid-2" style="margin-bottom: 30px;">
+                <div class="card" style="text-align: center;">
+                    <span class="card-icon">&#127774;</span>
+                    <h3>Solar Node</h3>
+                    <div class="metric-value">9.1%</div>
+                    <div class="metric-label">MAPE (1h ahead)</div>
+                    <div class="metric-improvement">&uarr; 87.8% better than persistence</div>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <span class="card-icon">&#127744;</span>
+                    <h3>Wind Node</h3>
+                    <div class="metric-value">13.5%</div>
+                    <div class="metric-label">MAPE (1h ahead)</div>
+                    <div class="metric-improvement">&uarr; 69.8% better than persistence</div>
+                </div>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Horizon</th>
+                        <th>Solar MAPE</th>
+                        <th>Wind MAPE</th>
+                        <th>Solar Improvement</th>
+                        <th>Wind Improvement</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1 hour</td><td>9.1%</td><td>13.5%</td><td style="color: var(--primary);">87.8%</td><td style="color: var(--primary);">69.8%</td></tr>
+                    <tr><td>3 hours</td><td>12.3%</td><td>15.8%</td><td style="color: var(--primary);">82.1%</td><td style="color: var(--primary);">61.2%</td></tr>
+                    <tr><td>6 hours</td><td>17.5%</td><td>19.1%</td><td style="color: var(--primary);">74.5%</td><td style="color: var(--primary);">53.6%</td></tr>
+                    <tr><td>12 hours</td><td>22.4%</td><td>24.8%</td><td style="color: var(--primary);">62.3%</td><td style="color: var(--primary);">41.2%</td></tr>
+                    <tr><td>24 hours</td><td>28.7%</td><td>31.2%</td><td style="color: var(--primary);">48.9%</td><td style="color: var(--primary);">33.7%</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SLIDE 9: Uncertainty Quantification -->
+        <div class="slide" data-section="Uncertainty">
+            <span class="section-label">Reliability</span>
+            <h2>Conformal Prediction</h2>
+            <p class="subtitle">Distribution-free uncertainty quantification with guaranteed coverage</p>
+            <div class="grid-2">
+                <div>
+                    <div class="card" style="margin-bottom: 20px;">
+                        <h3>How It Works</h3>
+                        <p style="color: rgba(255,255,255,0.6); line-height: 1.8; font-size: 0.9rem;">
+                            1. Train model on training set<br>
+                            2. Compute residuals on calibration set<br>
+                            3. Use residual quantiles as prediction intervals<br>
+                            4. <strong style="color: var(--primary);">Guaranteed coverage</strong> regardless of model
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3>Why Not Bayesian?</h3>
+                        <p style="color: rgba(255,255,255,0.6); line-height: 1.8; font-size: 0.9rem;">
+                            &bull; No distributional assumptions<br>
+                            &bull; Works with any base model (XGBoost)<br>
+                            &bull; Computationally cheap (no sampling)<br>
+                            &bull; Finite-sample validity guarantee
+                        </p>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; flex-direction: column; justify-content: center;">
+                    <h3>Coverage Verification</h3>
+                    <div style="margin-top: 20px;">
+                        <div class="comparison-row" style="background: transparent; border: none; padding: 8px 0;">
+                            <span class="comparison-label">80% CI</span>
+                            <div class="comparison-bar"><div class="comparison-fill" data-width="80"></div></div>
+                            <span class="comparison-value">80.2%</span>
+                        </div>
+                        <div class="comparison-row" style="background: transparent; border: none; padding: 8px 0;">
+                            <span class="comparison-label">90% CI</span>
+                            <div class="comparison-bar"><div class="comparison-fill" data-width="90"></div></div>
+                            <span class="comparison-value">89.7%</span>
+                        </div>
+                        <div class="comparison-row" style="background: transparent; border: none; padding: 8px 0;">
+                            <span class="comparison-label">95% CI</span>
+                            <div class="comparison-bar"><div class="comparison-fill" data-width="95"></div></div>
+                            <span class="comparison-value">94.8%</span>
+                        </div>
+                    </div>
+                    <p style="margin-top: 16px; color: rgba(255,255,255,0.4); font-size: 0.8rem; text-align: center;">Actual coverage matches nominal — intervals are calibrated correctly</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: Explainability -->
+        <div class="slide" data-section="Explainability">
+            <span class="section-label">Trust & Transparency</span>
+            <h2>SHAP Explainability</h2>
+            <p class="subtitle">Every prediction is explainable — operators know WHY, not just WHAT</p>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>&#127774; Solar — Top Drivers</h3>
+                    <div style="margin-top: 16px;">
+                        <div class="comparison-row" style="margin-bottom: 8px;">
+                            <span class="comparison-label">GHI (irradiance)</span>
+                            <div class="comparison-bar"><div class="comparison-fill" data-width="95"></div></div>
+                        </div>
+                        <div class="comparison-row" style="margin-bottom: 8px;">
+                            <span class="comparison-label">Air temp change</span>
+                            <div class="comparison-bar"><div class="comparison-fill" data-width="72"></div></div>
+                        </div>
+                        <div class="comparison-row" style="margin-bottom: 8px;">
+                            <span class="comparison-label">GHI variability (6h)</span>
+                            <div class="comparison-bar"><div class="comparison-fill" data-width="58"></div></div>
+                        </div>
+                        <div class="comparison-row" style="margin-bottom: 8px;">
+                            <span class="comparison-label">Hour of day</span>
+                            <div class="comparison-bar"><div class="comparison-fill" data-width="45"></div></div>
+                        </div>
+                        <div class="comparison-row">
+                            <span class="comparison-label">Panel temperature</span>
+                            <div class="comparison-bar"><div class="comparison-fill" data-width="38"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>&#127744; Wind — Top Drivers</h3>
+                    <div style="margin-top: 16px;">
+                        <div class="comparison-row" style="margin-bottom: 8px;">
+                            <span class="comparison-label">Wind speed</span>
+                            <div class="comparison-bar"><div class="comparison-fill" data-width="98"></div></div>
+                        </div>
+                        <div class="comparison-row" style="margin-bottom: 8px;">
+                            <span class="comparison-label">Power change (1h)</span>
+                            <div class="comparison-bar"><div class="comparison-fill" data-width="65"></div></div>
+                        </div>
+                        <div class="comparison-row" style="margin-bottom: 8px;">
+                            <span class="comparison-label">Vibration</span>
+                            <div class="comparison-bar"><div class="comparison-fill" data-width="52"></div></div>
+                        </div>
+                        <div class="comparison-row" style="margin-bottom: 8px;">
+                            <span class="comparison-label">Pressure trend</span>
+                            <div class="comparison-bar"><div class="comparison-fill" data-width="40"></div></div>
+                        </div>
+                        <div class="comparison-row">
+                            <span class="comparison-label">Air density</span>
+                            <div class="comparison-bar"><div class="comparison-fill" data-width="33"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="highlight-box" style="max-width: 700px; text-align: center; margin-top: 20px;">
+                <strong style="color: var(--primary);">Physics-consistent:</strong>
+                <span style="color: rgba(255,255,255,0.6);">Model learned that wind speed and GHI are primary drivers — matching physical theory (P &prop; v&sup3;, P &prop; GHI)</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: LLM Intelligence -->
+        <div class="slide" data-section="LLM">
+            <span class="section-label">AI Assistant</span>
+            <h2>Local LLM Intelligence</h2>
+            <p class="subtitle">Qwen 2.5 7B running on-premise via Ollama — natural language insights</p>
+            <div class="grid-2">
+                <div class="chat-demo" id="chatDemo">
+                    <div class="chat-msg" data-delay="0">
+                        <div class="chat-avatar user">&#128100;</div>
+                        <div class="chat-bubble">Why is solar output low right now?</div>
+                    </div>
+                    <div class="chat-msg" data-delay="1">
+                        <div class="chat-avatar ai">&#129302;</div>
+                        <div class="chat-bubble">Solar output is currently low due to high cloud cover (clearness index: 0.3) and elevated panel temperature (+12&deg;C above ambient), which reduces cell efficiency by ~5.4%. The soiling index is also elevated at 0.7, suggesting panel cleaning would recover ~15% generation.</div>
+                    </div>
+                    <div class="chat-msg" data-delay="2">
+                        <div class="chat-avatar user">&#128100;</div>
+                        <div class="chat-bubble">What actions should I take?</div>
+                    </div>
+                    <div class="chat-msg" data-delay="3">
+                        <div class="chat-avatar ai">&#129302;</div>
+                        <div class="chat-bubble">1. Schedule panel cleaning — soiling is at 70%, cleaning would add ~0.8 kW. 2. No curtailment risk today — forecast shows cloud clearing by 14:00 with 4.2 kW peak expected. 3. Wind node is compensating well at 2.1 kW.</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="card" style="margin-bottom: 16px;">
+                        <h3>Capabilities</h3>
+                        <p style="color: rgba(255,255,255,0.6); line-height: 2; font-size: 0.9rem;">
+                            &bull; Explains current sensor readings<br>
+                            &bull; Interprets forecast uncertainty<br>
+                            &bull; Suggests operational actions<br>
+                            &bull; Translates SHAP values to language<br>
+                            &bull; Answers domain questions
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3>On-Premise Deployment</h3>
+                        <p style="color: rgba(255,255,255,0.6); line-height: 2; font-size: 0.9rem;">
+                            &bull; Qwen 2.5 7B via Ollama<br>
+                            &bull; Runs on local machine at plant<br>
+                            &bull; No cloud API dependency<br>
+                            &bull; No data leaves the facility<br>
+                            &bull; Works fully offline
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: Dashboard -->
+        <div class="slide" data-section="Dashboard">
+            <span class="section-label">Visualization</span>
+            <h2>Real-Time Dashboard</h2>
+            <p class="subtitle">Streamlit-powered monitoring with live data streaming and interactive charts</p>
+            <div class="grid-3">
+                <div class="card" style="text-align: center;">
+                    <span class="card-icon">&#128200;</span>
+                    <h3>Live Monitoring</h3>
+                    <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">Real-time sensor data with 5-second refresh, dual-node view, sparklines</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <span class="card-icon">&#128201;</span>
+                    <h3>Forecast View</h3>
+                    <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">Multi-horizon predictions with confidence bands, toggle between nodes</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <span class="card-icon">&#128172;</span>
+                    <h3>AI Chat</h3>
+                    <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">Context-aware Q&A about current state, forecasts, and recommendations</p>
+                </div>
+            </div>
+            <div class="grid-2" style="margin-top: 24px;">
+                <div class="card">
+                    <h3>Data Sources</h3>
+                    <p style="color: rgba(255,255,255,0.6); line-height: 2; font-size: 0.9rem;">
+                        &bull; <strong>Live mode:</strong> Pi REST API (http://pi:5000)<br>
+                        &bull; <strong>Historical:</strong> 30-day synthetic dataset<br>
+                        &bull; <strong>Fallback:</strong> Auto-switches on connection loss
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>Visualizations</h3>
+                    <p style="color: rgba(255,255,255,0.6); line-height: 2; font-size: 0.9rem;">
+                        &bull; Time-series with Plotly (zoomable)<br>
+                        &bull; Wind rose diagram<br>
+                        &bull; Scatter correlation plots<br>
+                        &bull; Histogram distributions<br>
+                        &bull; Forecast uncertainty bands
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 13: Requirement Alignment -->
+        <div class="slide" data-section="Alignment">
+            <span class="section-label">Challenge Requirements</span>
+            <h2>Problem Statement Alignment</h2>
+            <p class="subtitle">How VidyutDrishti addresses each KREDL/KSPDCL requirement</p>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Requirement</th><th>Our Solution</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Day-ahead forecasts</td><td>24h horizon model (XGBoost)</td></tr>
+                    <tr><td>Intra-day updates</td><td>1h, 3h, 6h models with live retraining capability</td></tr>
+                    <tr><td>Hourly granularity</td><td>Forecasts at 1, 3, 6, 12, 24h ahead</td></tr>
+                    <tr><td>Uncertainty estimation</td><td>Conformal prediction (80%, 90%, 95% CI)</td></tr>
+                    <tr><td>Explainability</td><td>SHAP values + LLM natural language explanations</td></tr>
+                    <tr><td>Solar + Wind generalization</td><td>Same architecture, node-specific physics</td></tr>
+                    <tr><td>No hosted LLM</td><td>Qwen 2.5 7B runs locally via Ollama</td></tr>
+                    <tr><td>Works with limited data</td><td>30-day synthetic dataset, XGBoost excels on small data</td></tr>
+                    <tr><td>No SCADA changes</td><td>Read-only, API-based integration layer</td></tr>
+                    <tr><td>Measurable improvement</td><td>70-88% improvement over persistence baseline</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SLIDE 14: Technical Innovation -->
+        <div class="slide" data-section="Innovation">
+            <span class="section-label">Differentiators</span>
+            <h2>What Makes This Different</h2>
+            <div class="grid-2" style="margin-top: 20px;">
+                <div class="card">
+                    <span class="card-icon">&#128300;</span>
+                    <h3>Physics-Informed</h3>
+                    <p style="color: rgba(255,255,255,0.6); line-height: 1.8;">Not just statistical correlation. Models respect physical laws: P &prop; v&sup3; for wind, temperature degradation for solar, air density from pressure/temperature. SHAP confirms model learned physics.</p>
+                </div>
+                <div class="card">
+                    <span class="card-icon">&#127968;</span>
+                    <h3>Fully On-Premise</h3>
+                    <p style="color: rgba(255,255,255,0.6); line-height: 1.8;">Complete system runs without internet. Sensor &rarr; Edge &rarr; ML &rarr; LLM all on local hardware. Perfect for sensitive industrial environments and remote plants.</p>
+                </div>
+                <div class="card">
+                    <span class="card-icon">&#128737;</span>
+                    <h3>Soiling Detection</h3>
+                    <p style="color: rgba(255,255,255,0.6); line-height: 1.8;">Novel laser+LDR approach for real-time panel soiling measurement. Enables predictive maintenance scheduling. Most systems lack this sensing capability.</p>
+                </div>
+                <div class="card">
+                    <span class="card-icon">&#129504;</span>
+                    <h3>LLM Operator Interface</h3>
+                    <p style="color: rgba(255,255,255,0.6); line-height: 1.8;">First-of-kind local LLM integration for renewable forecasting. Operators ask questions in natural language instead of interpreting complex plots.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 15: KREDL/KSPDCL Context -->
+        <div class="slide" data-section="Impact">
+            <span class="section-label">Industry Context</span>
+            <h2>KREDL / KSPDCL — Current vs Future</h2>
+            <p class="subtitle">How VidyutDrishti transforms renewable energy operations in Karnataka</p>
+            <div class="grid-2">
+                <div class="card" style="border-top: 3px solid rgba(255,100,100,0.6);">
+                    <h3 style="color: #ff6b6b;">&#9888; Current State (KREDL/KSPDCL)</h3>
+                    <p style="color: rgba(255,255,255,0.6); line-height: 2; font-size: 0.85rem;">
+                        &bull; <strong style="color: var(--text-bright);">KREDL</strong> (Karnataka Renewable Energy Development Ltd) &mdash; promotes &amp; develops RE projects across the state<br>
+                        &bull; <strong style="color: var(--text-bright);">KSPDCL</strong> (Karnataka State Power Distribution Corp) &mdash; purchases and distributes generated power to consumers<br>
+                        &bull; Forecasting relies on <strong style="color: #ff6b6b;">persistence models</strong> or third-party weather APIs<br>
+                        &bull; No plant-level real-time sensor intelligence<br>
+                        &bull; Deviation penalties eat into generator profits<br>
+                        &bull; ~8% renewable curtailment due to unpredictability<br>
+                        &bull; SLDC (State Load Dispatch) gets inaccurate schedules
+                    </p>
+                </div>
+                <div class="card" style="border-top: 3px solid var(--primary);">
+                    <h3 style="color: var(--primary);">&#10003; With VidyutDrishti</h3>
+                    <p style="color: rgba(255,255,255,0.6); line-height: 2; font-size: 0.85rem;">
+                        &bull; <strong style="color: var(--primary);">Plant-level edge intelligence</strong> &mdash; forecasts from actual sensor data, not just weather APIs<br>
+                        &bull; <strong style="color: var(--primary);">70-88% better accuracy</strong> over persistence baseline<br>
+                        &bull; Real-time uncertainty bands for risk-aware scheduling<br>
+                        &bull; Operators get natural language explanations (no data science needed)<br>
+                        &bull; Reduced deviation penalties = better economics for generators<br>
+                        &bull; SLDC gets reliable schedules &rarr; less curtailment<br>
+                        &bull; Predictive maintenance (soiling, vibration) reduces downtime
+                    </p>
+                </div>
+            </div>
+            <div class="highlight-box" style="max-width: 900px; margin-top: 16px;">
+                <div style="text-align: center; color: rgba(255,255,255,0.7); font-size: 0.9rem; line-height: 1.8;">
+                    <strong style="color: var(--accent);">Impact for Karnataka:</strong> With 15+ GW installed RE capacity, even 5% improvement in forecast accuracy translates to <strong style="color: var(--primary);">&#8377;100+ crore/year</strong> savings in curtailment losses and deviation penalties across the state grid.
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 16: Production Deployment -->
+        <div class="slide" data-section="Production">
+            <span class="section-label">Deployment</span>
+            <h2>Production Implementation</h2>
+            <p class="subtitle">How VidyutDrishti deploys at actual KREDL/KSPDCL renewable plants</p>
+            <div class="grid-2">
+                <div>
+                    <div class="card" style="margin-bottom: 14px; border-left: 3px solid var(--primary);">
+                        <h3 style="font-size: 0.95rem;">&#127981; At Each Plant (Edge Node)</h3>
+                        <p style="color: rgba(255,255,255,0.6); line-height: 1.9; font-size: 0.82rem;">
+                            &bull; Industrial-grade sensors replace prototype components<br>
+                            &bull; Cup anemometer + wind vane (instead of pots)<br>
+                            &bull; Pyranometer for GHI (instead of BH1750 lux)<br>
+                            &bull; ESP32 + Raspberry Pi 4 as edge gateway<br>
+                            &bull; XGBoost models run inference on Pi itself<br>
+                            &bull; No public internet &mdash; private plant network only
+                        </p>
+                    </div>
+                    <div class="card" style="margin-bottom: 14px; border-left: 3px solid var(--secondary);">
+                        <h3 style="font-size: 0.95rem;">&#128187; At Control Room (Local Server)</h3>
+                        <p style="color: rgba(255,255,255,0.6); line-height: 1.9; font-size: 0.82rem;">
+                            &bull; <strong style="color: var(--text-bright);">LLM runs on a local machine/server</strong> at control room<br>
+                            &bull; <strong style="color: var(--text-bright);">InfluxDB</strong> time-series database (replaces SQLite)<br>
+                            &bull; Receives data from plant Pis over private network/VPN<br>
+                            &bull; Grafana dashboards + Streamlit for operators<br>
+                            &bull; Natural language Q&amp;A via local Qwen/Llama model<br>
+                            &bull; No cloud/public internet &mdash; all on private infra
+                        </p>
+                    </div>
+                    <div class="card" style="margin-bottom: 14px; border-left: 3px solid var(--accent);">
+                        <h3 style="font-size: 0.95rem;">&#128200; SLDC Integration</h3>
+                        <p style="color: rgba(255,255,255,0.6); line-height: 1.9; font-size: 0.82rem;">
+                            &bull; REST API feeds forecasts to SLDC scheduling systems<br>
+                            &bull; Day-ahead (24h) + intra-day (1-6h) schedules<br>
+                            &bull; Uncertainty bands for reserve planning<br>
+                            &bull; Read-only integration &mdash; no SCADA modifications
+                        </p>
+                    </div>
+                    <div class="card" style="border-left: 3px solid #a29bfe;">
+                        <h3 style="font-size: 0.95rem;">&#128451; Why InfluxDB in Production?</h3>
+                        <p style="color: rgba(255,255,255,0.6); line-height: 1.9; font-size: 0.82rem;">
+                            &bull; <strong style="color: var(--text-bright);">SQLite</strong> (prototype): simple, zero-config, good for single Pi<br>
+                            &bull; <strong style="color: var(--text-bright);">InfluxDB</strong> (production): purpose-built for time-series data<br>
+                            &bull; 10x faster queries on time-range aggregations<br>
+                            &bull; Built-in retention policies (auto-delete old data)<br>
+                            &bull; Native downsampling (1-min &rarr; hourly &rarr; daily)<br>
+                            &bull; Handles millions of data points from multiple plants
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <!-- Production architecture mini-diagram -->
+                    <div class="card" style="padding: 20px; margin-bottom: 14px;">
+                        <h3 style="font-size: 0.95rem; margin-bottom: 12px;">Production Architecture</h3>
+                        <div style="font-size: 0.78rem; line-height: 2.2; color: rgba(255,255,255,0.6); font-family: monospace;">
+                            <div style="padding: 8px 12px; background: rgba(0,184,148,0.06); border-radius: 6px; margin-bottom: 6px;">
+                                &#127981; <strong style="color: var(--primary);">Plant 1</strong>: Sensors &rarr; ESP32 &rarr; Pi (edge ML)
+                            </div>
+                            <div style="padding: 8px 12px; background: rgba(0,184,148,0.06); border-radius: 6px; margin-bottom: 6px;">
+                                &#127981; <strong style="color: var(--primary);">Plant 2</strong>: Sensors &rarr; ESP32 &rarr; Pi (edge ML)
+                            </div>
+                            <div style="padding: 8px 12px; background: rgba(0,184,148,0.06); border-radius: 6px; margin-bottom: 6px;">
+                                &#127981; <strong style="color: var(--primary);">Plant N</strong>: Sensors &rarr; ESP32 &rarr; Pi (edge ML)
+                            </div>
+                            <div style="text-align: center; color: var(--primary); padding: 4px;">&#9660; Private Network / VPN (no public internet) &#9660;</div>
+                            <div style="padding: 10px 12px; background: rgba(9,132,227,0.08); border-radius: 6px; margin-bottom: 6px; border: 1px solid rgba(9,132,227,0.2);">
+                                &#128187; <strong style="color: var(--secondary);">Control Room Server</strong><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;InfluxDB + Grafana + LLM + Retraining
+                            </div>
+                            <div style="text-align: center; color: var(--secondary); padding: 4px;">&#9660; API &#9660;</div>
+                            <div style="padding: 10px 12px; background: rgba(253,203,110,0.08); border-radius: 6px; border: 1px solid rgba(253,203,110,0.2);">
+                                &#9889; <strong style="color: var(--accent);">SLDC / KSPDCL</strong><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;Scheduling + Dispatch + Grid Balancing
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 style="font-size: 0.95rem;">&#128176; Cost Per Plant</h3>
+                        <table style="width: 100%; font-size: 0.8rem; color: rgba(255,255,255,0.6);">
+                            <tr><td>ESP32 + Sensors</td><td style="text-align: right; color: var(--primary);">&#8377;3,000</td></tr>
+                            <tr><td>Raspberry Pi 4B</td><td style="text-align: right; color: var(--primary);">&#8377;4,500</td></tr>
+                            <tr><td>Industrial sensors (anemometer, pyranometer)</td><td style="text-align: right; color: var(--primary);">&#8377;15,000</td></tr>
+                            <tr><td>Enclosure + wiring</td><td style="text-align: right; color: var(--primary);">&#8377;2,500</td></tr>
+                            <tr style="border-top: 1px solid rgba(255,255,255,0.1);"><td><strong style="color: var(--text-bright);">Total per plant node</strong></td><td style="text-align: right; color: var(--primary); font-weight: 700;">&#8377;25,000</td></tr>
+                        </table>
+                        <p style="font-size: 0.72rem; color: rgba(255,255,255,0.35); margin-top: 8px;">Control room: &#8377;1-2L GPU workstation (one physical server at KREDL/SLDC office, receives data from all plants over private network/VPN &mdash; no public internet)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 17: Roadmap -->
+        <div class="slide" data-section="Roadmap">
+            <span class="section-label">What's Next</span>
+            <h2>Implementation Roadmap</h2>
+            <p class="subtitle">Phased rollout plan for KREDL renewable plants</p>
+            <div class="grid-3">
+                <div class="card" style="border-top: 3px solid var(--primary);">
+                    <h3>Phase 1 — Pilot (Now)</h3>
+                    <p style="color: rgba(255,255,255,0.6); line-height: 2; font-size: 0.82rem;">
+                        &#10003; Prototype validated (this demo)<br>
+                        &#10003; XGBoost multi-horizon models<br>
+                        &#10003; Conformal prediction intervals<br>
+                        &#10003; Local LLM on control room machine<br>
+                        &#10003; Deploy at 1 pilot plant
+                    </p>
+                </div>
+                <div class="card" style="border-top: 3px solid var(--secondary);">
+                    <h3>Phase 2 — Scale (3 months)</h3>
+                    <p style="color: rgba(255,255,255,0.6); line-height: 2; font-size: 0.82rem;">
+                        &bull; Deploy to 10-20 plants<br>
+                        &bull; Add LSTM ensemble for 12-24h<br>
+                        &bull; Weather API integration (IMD data)<br>
+                        &bull; SLDC API for automated scheduling<br>
+                        &bull; Automated model retraining pipeline
+                    </p>
+                </div>
+                <div class="card" style="border-top: 3px solid var(--accent);">
+                    <h3>Phase 3 — State-wide (6 months)</h3>
+                    <p style="color: rgba(255,255,255,0.6); line-height: 2; font-size: 0.82rem;">
+                        &bull; All KREDL plants onboarded<br>
+                        &bull; Spatial correlation (plant diversity)<br>
+                        &bull; Federated learning across plants<br>
+                        &bull; Mobile alerts for field teams<br>
+                        &bull; Ramp event early warning system
+                    </p>
+                </div>
+            </div>
+            <div class="highlight-box" style="max-width: 800px; text-align: center; margin-top: 20px;">
+                <strong style="color: var(--primary);">Key principle:</strong>
+                <span style="color: rgba(255,255,255,0.6);">LLM and all intelligence runs on local server at the control room. Plants connect over private network/VPN. Zero public internet or cloud dependency &mdash; compliant with grid security requirements.</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 16: Thank You -->
+        <div class="slide" data-section="">
+            <div class="title-badge">Thank You</div>
+            <h1>VidyutDrishti</h1>
+            <p class="subtitle">Making renewable energy predictable, explainable, and intelligent</p>
+            <div class="grid-3" style="max-width: 700px; margin-top: 30px;">
+                <div style="text-align: center;">
+                    <div class="metric-value" style="font-size: 2rem;">12</div>
+                    <div class="metric-label">Physical Sensors</div>
+                </div>
+                <div style="text-align: center;">
+                    <div class="metric-value" style="font-size: 2rem;">88%</div>
+                    <div class="metric-label">Better than Baseline</div>
+                </div>
+                <div style="text-align: center;">
+                    <div class="metric-value" style="font-size: 2rem;">100%</div>
+                    <div class="metric-label">On-Premise</div>
+                </div>
+            </div>
+            <div class="team-info" style="margin-top: 50px;">
+                <strong>Team GreenMatrix</strong><br>
+                Dhaval Dipakbhai Thakkar<br>
+                <span style="color: rgba(255,255,255,0.3);">dhavalthakkar4995@gmail.com</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <button class="nav-btn" id="prevBtn" onclick="navigate(-1)">&#8592; Previous</button>
+        <div class="progress-bar" id="progressBar"></div>
+        <div class="slide-counter" id="slideCounter">1 / 20</div>
+        <button class="nav-btn" id="nextBtn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const progressBar = document.getElementById('progressBar');
+        const slideCounter = document.getElementById('slideCounter');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        // Create progress dots
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'progress-dot' + (i === 0 ? ' active' : '');
+            dot.onclick = () => goToSlide(i);
+            progressBar.appendChild(dot);
+        }
+
+        function goToSlide(index) {
+            if (index < 0 || index >= totalSlides) return;
+
+            slides[currentSlide].classList.remove('active');
+            if (index > currentSlide) slides[currentSlide].classList.add('prev');
+
+            currentSlide = index;
+
+            slides.forEach((s, i) => {
+                s.classList.remove('active', 'prev');
+                if (i === currentSlide) s.classList.add('active');
+                else if (i < currentSlide) s.classList.add('prev');
+            });
+
+            // Update progress
+            document.querySelectorAll('.progress-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentSlide);
+            });
+
+            slideCounter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === totalSlides - 1;
+
+            // Trigger animations
+            triggerAnimations();
+        }
+
+        function navigate(direction) {
+            goToSlide(currentSlide + direction);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); navigate(1); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); navigate(-1); }
+            if (e.key === 'Home') { e.preventDefault(); goToSlide(0); }
+            if (e.key === 'End') { e.preventDefault(); goToSlide(totalSlides - 1); }
+        });
+
+        // Touch/swipe support
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+        document.addEventListener('touchend', (e) => {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) navigate(diff > 0 ? 1 : -1);
+        });
+
+        // Trigger animations on slide
+        function triggerAnimations() {
+            const slide = slides[currentSlide];
+
+            // Architecture flow
+            const archNodes = slide.querySelectorAll('.arch-node, .arch-arrow');
+            archNodes.forEach((node, i) => {
+                setTimeout(() => node.classList.add('visible'), i * 200);
+            });
+
+            // Pipeline
+            const pipeSteps = slide.querySelectorAll('.pipeline-step, .pipeline-arrow');
+            pipeSteps.forEach((step, i) => {
+                setTimeout(() => step.classList.add('visible'), i * 150);
+            });
+
+            // Chat messages
+            const chatMsgs = slide.querySelectorAll('.chat-msg');
+            chatMsgs.forEach((msg, i) => {
+                setTimeout(() => msg.classList.add('visible'), i * 600);
+            });
+
+            // Comparison bars
+            const bars = slide.querySelectorAll('.comparison-fill');
+            bars.forEach((bar, i) => {
+                setTimeout(() => {
+                    bar.style.width = (bar.dataset.width || '50') + '%';
+                }, 300 + i * 100);
+            });
+        }
+
+        // Hide keyboard hint after 5 seconds
+        setTimeout(() => {
+            document.getElementById('keyHint').style.opacity = '0';
+        }, 5000);
+
+        // Initial animations
+        triggerAnimations();
+    </script>
+</body>
+</html>
